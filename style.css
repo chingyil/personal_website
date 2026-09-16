@@ -1,0 +1,220 @@
+/* A Free Design by Bryant Smith (bryantsmith.com) */
+
+body {
+	margin: 0;
+	padding: 0;
+	text-align: left;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	color: #000000;
+	background: #FFFFFF;
+	line-height:25px;
+}
+*
+{
+  margin: 0 auto 0 auto;
+ text-align:left;
+ font-size: 16px;
+}
+ 
+ 
+ html, body {
+text-align: center;
+}
+p {text-align: left;}
+
+
+h1
+{
+font-size:30px;
+font-weight:normal;
+padding:10px;
+padding-bottom: 20px;
+}
+
+
+h2
+{
+font-size:26px;
+font-weight:normal;
+padding-left:15px;
+padding-top:35px;
+padding-bottom:10px;
+}
+
+#main
+{
+width:1000px;
+height:auto;
+padding-bottom:20px;
+}
+
+#header
+{
+color:#ffffff;
+clear:both;
+width:1000px;
+height:25px;
+background-image:url(images/cmu-tartan-wave-full-color-crop-04.png);
+background-repeat:repeat-x;
+text-align:right;
+line-height:25px;
+}
+
+#header a, #header a:visited, #header a:hover
+{
+font-size:20px;
+font-weight:bold;
+color:#FFFFFF;
+padding-left:12px;
+padding-right:5px;
+text-decoration:none;
+line-height:25px;
+}
+
+#footer
+{
+color:#ffffff;
+/* font-size:10px; */
+clear:both;
+width:1000px;
+height:25px;
+background-image:url(images/cmu-tartan-wave-full-color-crop-04.png);
+background-repeat:repeat-x;
+text-align:center;
+line-height:25px;
+font-weight:normal;
+}
+
+#footer a, #footer a:visited, #footer a:hover
+{
+/* font-size:10px; */
+color:#FFFFFF;
+text-decoration:none;
+line-height:25px;
+}
+
+
+
+
+#header a:hover { 
+color:#F2EAEA;
+border:none;
+}
+
+#contentColumn
+{
+float:left;
+width:600px;
+}
+
+#navColumn
+{
+	
+float:left;
+width:280px;
+padding-top:20px;
+padding-left:20px;
+background-color: #fafafa;
+border-color: #e7e7e7;
+border-style: solid;
+margin: 20px;
+margin-top: 50px;
+margin-left: 50px;
+}
+
+#contentColumn p
+{
+text-align:left;
+line-height:25px;
+/* letter-spacing:-1px; */
+margin:6px;
+}
+
+
+
+.divider
+{
+background-image:url(images/cmu-tartan-wave-full-color-crop-03.png);
+width:600px;
+height:3px;
+margin-bottom:10px;
+
+}
+.subHeader
+{
+margin-top:20px;
+margin-bottom:4px;
+width:150px;
+height:20px;
+background-image:url(images/cmu-tartan-wave-full-color-crop-04.png);
+text-align:center;
+}
+
+.subHeader h3
+{
+font-size:20px;
+line-height:20px;
+color:#FFFFFF;
+text-align:center;
+}
+
+ul,  li
+{
+text-align:left;
+padding:3px;
+margin-left: 15px;
+list-style-image:url(images/cmu-scotty-head-scarf-tiny.svg);
+list-style-position: inside;
+text-indent: -25px;
+}
+
+
+
+a, a:visited
+{
+text-decoration:none;
+color:#9B1313;
+}
+
+a:hover
+{
+color:#9B1313;
+border-bottom:dashed 1px #DD6A6A;
+}
+
+.collapsible {
+	background-color: white;
+	color: black;
+	cursor: pointer;
+	/* padding: 18px; */
+	width: 280px;
+	border: none;
+	text-align: left;
+	outline: none;
+	/* font-size: 15px; */
+}
+
+.active, .collapsible:hover {
+	color: darkblue;
+}
+
+.collapsible:before {
+	content: ">";
+	/* color: white; */
+	font-weight: bold;
+	float: left;
+	margin-right: 5px;
+}
+
+.active:before {
+	content: "v";
+}
+
+.content {
+	/* padding: 0 18px; */
+	max-height: 0;
+	overflow: hidden;
+	/* transition: max-height 0.2s ease-out; */
+	/* background-color: #f1f1f1; */
+}

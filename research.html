@@ -1,0 +1,174 @@
+ <!--
+Design by Bryant Smith
+http://www.bryantsmith.com
+http://www.aszx.net
+email: template [-at-] bryantsmith [-dot-] com
+Released under Creative Commons Attribution 2.5 Generic.  In other words, do with it what you please; but please leave the link if you'd be so kind :)
+
+Name       : Simple!
+Description: Top naviagation (main), and right naviagation (secondary) with main content in left column
+Version    : 1.0
+Released   : 20081009
+-->
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="style.css" />
+<title>Ching-Yi Lin's Personal Website</title>
+</head>
+
+<body>
+
+  <div id="main">
+  	<div id="header">
+        <a href="index.html">Home</a>
+        <a href="research.html">Research</a>
+        <a href="publications.html">Publication</a>
+        <a href="experience.html">Experience</a>
+    </div>
+
+    <div id="contentColumn">		
+    <!-- This is an entry, copy and paste it to create a new one -->      
+    <h2>Training for low-precision ML inference</h2>
+    <div class="divider"></div>
+    <br>
+    <!-- <div class="divider"></div> -->
+    My research focuses on training for low-precision ML inference. My recent works build a low-bit systolic array. On the hardware side, the low-bit arithmatic costs less energy from fewer logics and increases operational intensity. On the software side, the conventional quantized training is modified to fit low-bit integer arithmatic in the hardware. Combining the effort from both hardware and training, the power efficiency from a 16nm FPGA is 4.5x better than the same-technology GPUs.<br><br>
+    <button type="button" id="lowbitExperienceButton" class="collapsible">Related Experience</button>
+    <div id="lowbitExperienceContent" class="content" style="display: block">
+        <ul>
+            <li><a href="https://arxiv.org/pdf/2508.20334">Systolic Array-based Architecture for Low-Bit Integerized Vision Transformers</a><img width=500px src="images/hpca2026.png" alt="Italian Trulli"><br></li>
+            <li><a href="https://arxiv.org/pdf/2504.18547?">Low-Bit Integerization of Vision Transformers using Operand Reordering for Efficient Hardware</a><img width=500px src="images/mwscas2025.png" alt="Italian Trulli"><br></li>
+        </ul>
+    </div>
+
+    <h2>Cell culture assay</h2>
+    <div class="divider"></div>
+    <br>
+    <!-- <div class="divider"></div> -->
+    My research targets multimodal cell culture assay, especially cell image analysis. One aim of my thesis is to analyze cell status through visual and non-visual data. Our group has several publications using non-visual sensor data to achieve cell culture assay. And there are some preliminary results modeling cell tracking as an object detection problem.<br><br>
+    <button type="button" class="collapsible">Related Experience</button>
+    <div class="content">
+        <ul>
+            <li><a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=_eqMbZUAAAAJ&sortby=pubdate&citation_for_view=_eqMbZUAAAAJ:eQOLeE2rZwMC">Measuring and modeling macrophage proliferation in a lab-on-CMOS capacitance sensing microsystem</a><img width=500px src="images/frontier_kyle.png" alt="Italian Trulli"><br></li>
+            <li><a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=_eqMbZUAAAAJ&sortby=pubdate&citation_for_view=_eqMbZUAAAAJ:YsMSGLbcyi4C">Tracking the Effects of Tumor Treating Fields on Human Breast Cancer Cells in vitro Using a Capacitance Sensing Lab-on-CMOS Microsystem</a><img width=500px src="images/icecs_yann.png" alt="Italian Trulli"><br></li>
+
+        </ul>
+    </div>
+    <button type="button" id="videoExperienceButton" class="collapsible">Dissertation Video</button>
+    <div id="videoExperienceContent" class="content">
+        <video width="560" controls>
+            <source src="images/ttf625.mp4" type="video/mp4">
+        </video>
+        <br>
+        <a class="slider-text-inner btn btn-primary btn-learn" href="docs/dissertation.pdf">Download Dissertation Slides</a>
+    </div>
+
+    <h2>ML-based Signal Processing</h2>
+    <div class="divider"></div>
+    Not Deep Learning! My research also aims to employ machine learning in the real world. This includes algorithm part and implementation part. The algorithm part addresses the distribution shift between different domain, and the implementation part develop a hardware-friendly algorithm based on distributed inference or quantization. My specific focus targets the model with moderate number of parameters instead of an overparameterized model, and interested in the theoretical part of machine learning.<br><br>
+    <button type="button" class="collapsible">Related Experience</button>
+    <div class="content">
+        <ul>
+            <li>TA of 18-661 Intro to ML for Engineers (Fall 2021)</li>
+            <li><a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=_eqMbZUAAAAJ&sortby=pubdate&citation_for_view=_eqMbZUAAAAJ:d1gkVwhDpl0C">Model personalization for human activity recognition</a><img width=500px src="images/personalization.png"><br></li>
+            <li><a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=_eqMbZUAAAAJ&sortby=pubdate&citation_for_view=_eqMbZUAAAAJ:u5HHmVD_uO8C">Memory-and communication-aware model compression for distributed deep learning inference on IoT</a><img width=500px src="images/nonn.png"><br></li>
+            <li><a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=_eqMbZUAAAAJ&sortby=pubdate&citation_for_view=_eqMbZUAAAAJ:WF5omc3nYNoC">Non-Linear CNN-Based Read Channel for Hard Disk Drive With 30% Error Rate Reduction and Sequential 200-Mbits/s Throughput in 28-nm CMOS</a></li>
+            <li><a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=_eqMbZUAAAAJ&sortby=pubdate&citation_for_view=_eqMbZUAAAAJ:YsMSGLbcyi4C">ASIC Implementation of Non-linear CNN-based Data Detector for TDMR System in 28nm CMOS at 200Mbits/s Throughput</a></li>
+            <li><a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=_eqMbZUAAAAJ&sortby=pubdate&citation_for_view=_eqMbZUAAAAJ:qjMakFHDy7sC">Non-linear CNN-based Read Channel for Hard Disk Drive with 30% Error Rate Reduction and Sequential 200Mbits/second Throughput in 28nm CMOS</a><img width=500px src="images/hddnn_ml.png"></li>
+        </ul>
+    </div>
+
+    <h2>High-density Sensory Array Design</h2>
+    <div class="divider"></div>
+    My research focuses on high-density mixed-signal circuit design. One aim of my thesis is to maximize the density of our sensor array through customized layout integrated with Cadence Digital-on-Top Flow. This implementation will be realized through a chip using XFAB 350nm technology. Other than this project, I also have another chip taped out with TSMC 28nm technology with another high-density sensor array. This chip is currently under test in our group.<br><br>
+    <button type="button" id="relatedExperienceButton" class="collapsible">Related Experience</button>
+    <div id="relatedExperienceContent" class="content" style="display: block;">
+        <ul>
+            <li>TA of 18-421/623 Analog Integrated Circuit Design (Fall 2023)</li>
+            <li>Tapeout using XFAB 350nm technology</li>
+            <li>Tapeout using TSMC 28nm technology<img width=500px src="images/chimera.png"></li>
+            <li><a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=_eqMbZUAAAAJ&sortby=pubdate&citation_for_view=_eqMbZUAAAAJ:WF5omc3nYNoC">Non-Linear CNN-Based Read Channel for Hard Disk Drive With 30% Error Rate Reduction and Sequential 200-Mbits/s Throughput in 28-nm CMOS</a></li>
+            <li><a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=_eqMbZUAAAAJ&sortby=pubdate&citation_for_view=_eqMbZUAAAAJ:YsMSGLbcyi4C">ASIC Implementation of Non-linear CNN-based Data Detector for TDMR System in 28nm CMOS at 200Mbits/s Throughput</a></li>
+            <li><a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=_eqMbZUAAAAJ&sortby=pubdate&citation_for_view=_eqMbZUAAAAJ:qjMakFHDy7sC">Non-linear CNN-based Read Channel for Hard Disk Drive with 30% Error Rate Reduction and Sequential 200Mbits/second Throughput in 28nm CMOS</a><img width=500px src="images/hddnn_chip.png"></li>
+            <li><a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=_eqMbZUAAAAJ&sortby=pubdate&citation_for_view=_eqMbZUAAAAJ:zYLM7Y9cAGgC">CMOS Bioelectronics: Current and Future Trends</a></li>
+        </ul>
+    </div>
+    <br>
+    <br>
+</div>
+
+    
+
+
+
+<!-- This is an entry, copy and paste it to create a new one -->
+    </div>
+
+  <div id="newsContainer" w3-include-html="news_header.html"></div>
+  
+</div>
+<!-- Please leave the link(s) in the footer, but please do modify it in any other way you please -->
+<div id="footer">The HTML/CSS is modified by Ching-Yi using CMU-style theme (Tartan + Scotty dog icon)</div>
+
+<script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+    
+    for (i = 0; i < coll.length; i++) {
+      coll[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.maxHeight){
+          content.style.maxHeight = null;
+        } else {
+          content.style.maxHeight = content.scrollHeight + "px";
+        } 
+      });
+    }
+
+    // Ensure the "Related Experience" content is open by default
+    document.getElementById("lowbitExperienceButton").classList.add("active");  // Optional: add 'active' class for styling
+    document.getElementById("lowbitExperienceContent").style.display = "block";  // Show the content
+    document.getElementById("lowbitExperienceContent").style.maxHeight = document.getElementById("lowbitExperienceContent").scrollHeight + "0px"; // Cannot fix right now. Use 10x as an easy sol
+
+</script>
+
+<script>
+  function includeHTML() {
+    var z, i, elmnt, file, xhttp;
+    /*loop through a collection of all HTML elements:*/
+    z = document.getElementsByTagName("*");
+    for (i = 0; i < z.length; i++) {
+      elmnt = z[i];
+      /*search for elements with a certain attribute:*/
+      file = elmnt.getAttribute("w3-include-html");
+      if (file) {
+        /*make an HTTP request using the attribute value as the file name:*/
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4) {
+            if (this.status == 200) {elmnt.innerHTML = this.responseText;}
+            if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
+            /*remove the attribute, and call this function once more:*/
+            elmnt.removeAttribute("w3-include-html");
+            includeHTML();
+          }
+        }      
+        xhttp.open("GET", file, true);
+        xhttp.send();
+        /*exit the function:*/
+        return;
+      }
+    }
+  };
+// Call the function after page load
+document.addEventListener("DOMContentLoaded", includeHTML);
+</script>
+
+</body>
+</html>

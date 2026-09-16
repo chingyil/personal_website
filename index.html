@@ -1,0 +1,153 @@
+ <!--
+Design by Bryant Smith
+http://www.bryantsmith.com
+http://www.aszx.net
+email: template [-at-] bryantsmith [-dot-] com
+Released under Creative Commons Attribution 2.5 Generic.  In other words, do with it what you please; but please leave the link if you'd be so kind :)
+
+Name       : Simple!
+Description: Top naviagation (main), and right naviagation (secondary) with main content in left column
+Version    : 1.0
+Released   : 20081009
+-->
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css" />
+<title>Ching-Yi Lin's Personal Website</title>
+
+</head>
+
+<body>
+  <div id="main">
+  	<div id="header">
+    	  <a href="index.html">Home</a>
+        <a href="research.html">Research</a>
+        <a href="publications.html">Publication</a>
+        <a href="experience.html">Experience</a>
+    </div>
+
+    <div id="contentColumn">
+      <h2>Biography</h2>
+      <div class="divider"></div>
+      I am a researcher working as a postdoctoral associate advised by Professor <a href="https://ece.umd.edu/clark/faculty/1398/Sahil-Shah">Sahil Shah</a> in University of Maryland, College Park. Before my postdoc, I completed my Ph.D. at <a href="https://icbiolab.org/">ICBio Lab</a>, Electrical and Computer Engineering, Carnegie Mellon Univeristy in Jan. 2025 (advised by Professor <a href="https://www.ece.cmu.edu/directory/bios/dandin-marc.html">Marc Dandin</a>).<br><br>
+      My current research centers on energy-efficient AI hardware that bridges the gap between ML model compression and edge inference. At Maryland, I built a low-bit systolic array on FPGA, demonstrating the applicability of 3-bit Vision Transformer training. In my PhD dissertation, I developed an ASIC capacitance sensor for cancer cell assay. Throughout my PhD career, I was a recipitent of <a href="https://www.cs.cmu.edu/cmlh/digital-health-fellows">CMLH Fellowship</a> and Carnegie Institute of Technology Dean’s Fellow. I also held a research internship at Apple in Cupertino in 2021.<br>
+      <br>
+      <a class="slider-text-inner btn btn-primary btn-learn" href="docs/cv_chingyi.pdf"><img src="images/cmu-scotty-head-scarf-tiny.svg" width="15"> My CV<i class="icon-download4"></i></a>&emsp;
+      <br>
+      <h2>Education</h2>
+      <div class="divider"></div>
+      <h3>Ph.D. in Carnegie Mellon University</h3>
+      <ul id="phd">
+        <li>2018-2025</li>
+        <li>Electrical and Computer Engineering</li>
+        <li>Advised by Marc Dandin (2020~2025)</li>
+        <li>Previous advisors: Daniel Bankman(2020), Radu Marculescu (2018-2019)</li>
+        <li>Dissertation topic: A Multi-Modal Computational Framework for in vitro Cancer Cell Analysis Based on Capacitance Sensing and Optical Imaging</li>
+      </ul>
+      <button type="button" id="videoExperienceButton_home" class="collapsible">Dissertation Video</button>
+      <div id="videoExperienceContent_home" class="content" style="display: block;">
+          <video width="560" controls>
+              <source src="images/ttf625.mp4" type="video/mp4">
+          </video>
+          <br>
+          <a class="slider-text-inner btn btn-primary btn-learn" href="docs/dissertation.pdf">Download Dissertation Slides</a>
+      </div>
+      <br>
+      <h3>M.S. in Carnegie Mellon University</h3>
+      <ul>
+        <li>2018-2022</li>
+        <li>Electrical and Computer Engineering</li>
+      </ul>
+      <br>
+      <h3>M.S. in National Tsing Hua University (Incomplete)</h3>
+      <ul>
+        <li>2017-2018</li>
+        <li>Electrical Engineering</li>
+        <li>Advised by <a href="https://www.ee.nthu.edu.tw/jjliou/">Jing-Jia Liou</a></li>
+      </ul>
+      <br>
+      <h3>B.S. in National Tsing Hua University</h3>
+      <ul>
+        <li>2013-2017</li>
+        <li>Electrical Engineering</li>
+        <li>Class Representative</li>
+      </ul>
+      <br>
+    </div>
+
+  <div>
+
+  <div id="newsContainer" w3-include-html="news_header.html"></div>
+
+  <!-- Please leave the link(s) in the footer, but please do modify it in any other way you please -->
+  <div id="footer">The HTML/CSS is modified by Ching-Yi using CMU-style theme (Tartan + Scotty dog icon)</div>
+</div>
+
+<script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+    
+    for (i = 0; i < coll.length; i++) {
+      coll[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.maxHeight){
+          content.style.maxHeight = null;
+        } else {
+          content.style.maxHeight = content.scrollHeight + "px";
+        } 
+      });
+    }
+
+    // document.getElementById("relatedExperienceButton").classList.add("active");  // Optional: add a class for active styling
+    // document.getElementById("relatedExperienceContent").style.display = "block";  // Display content
+</script>
+
+<script>
+    // Ensure the "Related Experience" content is open by default
+    // document.getElementById("videoExperienceButton_home").classList.add("active");  // Optional: add 'active' class for styling
+    document.getElementById("videoExperienceContent_home").style.display = "block";  // Show the content
+    document.getElementById("videoExperienceContent_home").style.maxHeight = document.getElementById("videoExperienceContent_home").scrollHeight + "px";
+
+</script>
+
+<script>
+  function includeHTML() {
+    var z, i, elmnt, file, xhttp;
+    /*loop through a collection of all HTML elements:*/
+    z = document.getElementsByTagName("*");
+    for (i = 0; i < z.length; i++) {
+      elmnt = z[i];
+      /*search for elements with a certain attribute:*/
+      file = elmnt.getAttribute("w3-include-html");
+      if (file) {
+        /*make an HTTP request using the attribute value as the file name:*/
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4) {
+            if (this.status == 200) {elmnt.innerHTML = this.responseText;}
+            if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
+            /*remove the attribute, and call this function once more:*/
+            elmnt.removeAttribute("w3-include-html");
+            includeHTML();
+          }
+        }      
+        xhttp.open("GET", file, true);
+        xhttp.send();
+        /*exit the function:*/
+        return;
+      }
+    }
+  };
+// Call the function after page load
+document.addEventListener("DOMContentLoaded", includeHTML);
+</script>
+
+</body>
+</html>
