@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>3x4 Weight-Stationary Systolic Array with Target View Selection</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #ffffff;
+      color: #1f2937;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 10px;
+      margin: 0;
+    }
+
+    /* Color Coding System */
+    .color-red { color: #dc2626; }
+    .color-blue { color: #1d4ed8; }
+    .color-purple { color: #7866B3; }
+    .color-amber { color: #d97706; }
+    .color-dark-gray { color: #4b5563; }
+    .color-teal { color: #0d9488; }
+    .color-brown { color: #92400e; }
+
+    /* Main Container */
+    .main-layout {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 30px;
+      justify-content: center;
+      flex-wrap: nowrap;
+      width: max-content;   /* never squeeze or wrap: keep natural width, then scale down */
+    }
+
+    .main-layout > .animation-wrapper,
+    .main-layout > .matrix-config-container {
+      flex: 0 0 auto;
+    }
+
+    /* Matrix Inputs Section - Stacked Vertically */
+    .matrix-config-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      background-color: #f9fafb;
+      border: 1px solid #e5e7eb;
+      padding: 14px 14px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      width: max-content;
+    }
+
+    .matrix-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .matrix-title {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .matrix-grid-input {
+      display: grid;
+      gap: 4px;
+    }
+
+    .matrix-grid-input input[type="text"] {
+      width: 36px;
+      height: 28px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    #grid-x input[type="text"] {
+      border: 1px solid #fca5a5;
+      color: #dc2626;
+      background-color: #fef2f2;
+    }
+
+    #grid-w input[type="text"] {
+      border: 1px solid #93c5fd;
+      color: #1d4ed8;
+      background-color: #eff6ff;
+    }
+
+    .matrix-result-grid {
+      display: grid;
+      gap: 4px;
+      background: #ffffff;
+      padding: 6px;
+      border-radius: 6px;
+    }
+
+    .matrix-result-grid.purple-border {
+      border: 1px dashed #7866B3;
+    }
+
+    .matrix-result-grid.amber-border {
+      border: 1px dashed #d97706;
+    }
+
+    .matrix-result-grid.teal-border {
+      border: 1px dashed #0d9488;
+    }
+
+    .matrix-result-cell {
+      width: 36px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 4px;
+    }
+
+    .matrix-result-cell.purple-bg {
+      color: #7866B3;
+      background: #f5f3ff;
+    }
+
+    .matrix-result-cell.amber-bg {
+      color: #d97706;
+      background: #fffbeb;
+    }
+
+    .matrix-result-cell.teal-bg {
+      color: #0d9488;
+      background: #f0fdfa;
+    }
+
+    .math-operator {
+      font-size: 15px;
+      font-weight: 700;
+      color: #4b5563;
+      margin: -2px 0;
+    }
+
+    /* Top Control Toolbar above Systolic Array */
+    .top-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      background-color: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 10px 16px;
+      margin-bottom: 24px;
+      box-sizing: border-box;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    /* Controls Bar */
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .cycle-counter {
+      font-size: 16px;
+      font-weight: 700;
+      color: #374151;
+      margin-left: 6px;
+      user-select: none;
+    }
+
+    /* On/Off Switch Toggle Styling */
+    .switch-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .switch-label {
+      font-size: 15px;
+      font-weight: 700;
+      color: #374151;
+      user-select: none;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #9ca3af; /* Grey style when OFF */
+      transition: 0.25s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.25s;
+      border-radius: 50%;
+    }
+
+    /* When NOT checked -> Output Matrix mode (OFF state, Grey slider) */
+    .toggle-switch input:not(:checked) + .slider {
+      background-color: #9ca3af;
+    }
+
+    .toggle-switch input:not(:checked) + .slider:before {
+      transform: translateX(0px);
+    }
+
+    /* When checked -> With softmax mode (ON state, Teal theme slider) */
+    .toggle-switch input:checked + .slider {
+      background-color: #0d9488;
+    }
+
+    .toggle-switch input:checked + .slider:before {
+      transform: translateX(22px);
+    }
+
+    button {
+      background: #7866B3;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    button:hover {
+      background: #62519d;
+    }
+
+    .btn-icon {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border-radius: 50%;
+    }
+
+    .btn-icon svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    .btn-apply {
+      background: #7866B3;
+      height: 36px;
+      padding: 0 14px;
+    }
+
+    .btn-apply:hover {
+      background: #62519d;
+    }
+
+    /* Animation Matrix Section */
+    .animation-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Grid layout for De-skewed mode - Column 1 is 180px */
+    .systolic-container.grid-deskewed {
+      display: grid;
+      grid-template-columns: 180px 68px 40px 68px 40px 68px 40px 68px 40px;
+      grid-template-rows: repeat(3, 60px 40px) 60px 40px 60px 40px repeat(7, 26px 40px) 60px 40px auto 26px;
+      align-items: center;
+      justify-items: center;
+      position: relative;
+    }
+
+    /* Grid layout for Output Matrix (X^TW) mode */
+    .systolic-container.grid-xtw {
+      display: grid;
+      grid-template-columns: 180px 68px 40px 68px 40px 68px 40px 68px 40px;
+      grid-template-rows: repeat(3, 60px 40px) auto 26px;
+      align-items: center;
+      justify-items: center;
+      position: relative;
+    }
+
+    /*
+      Alignments:
+      - Left border aligned with the middle of the input arrows between input queue & left-most PEs:
+        Input queue width (156px) + 0.5 * input arrow connecting space (24px) = 168px
+      - Bottom border aligned with the middle of the vertical arrows below the bottom-most row:
+        3 PE rows (3 * 60 = 180px) + 2 row gaps (2 * 40 = 80px) + 0.5 * 3rd gap (20px) = 280px total height from top (-10px top offset) = 280px height
+    */
+    .systolic-array-box {
+      position: absolute;
+      top: -10px;
+      left: 168px;
+      right: 18px;
+      height: 280px;
+      border: 2px dashed #7866B3;
+      border-radius: 12px;
+      background-color: rgba(245, 243, 255, 0.25);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .systolic-array-box-label {
+      position: absolute;
+      top: -10px;
+      left: 14px;
+      background-color: #ffffff;
+      padding: 0 6px;
+      color: #7866B3;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .pe {
+      width: 68px;
+      height: 60px;
+      background-color: #ffffff;
+      border: 2px solid #7866B3;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      text-align: center;
+      box-sizing: border-box;
+      padding: 3px 1px 2px 1px;
+      transition: border-color 0.2s, background-color 0.2s;
+      z-index: 1;
+      line-height: 0.8;
+    }
+
+    .pe.active {
+      background-color: #f5f3ff;
+    }
+
+    .pe-activation {
+      border: 2px solid #d97706;
+    }
+
+    .pe-activation.active {
+      background-color: #fffbeb;
+    }
+
+    .pe-sum {
+      border: 2px solid #4b5563;
+    }
+
+    .pe-sum.active {
+      background-color: #f3f4f6;
+    }
+
+    .pe-div {
+      border: 2px solid #0d9488;
+    }
+
+    .pe-div.active {
+      background-color: #f0fdfa;
+    }
+
+    .pe-fifo {
+      width: 68px;
+      height: 26px;
+      border: 1px dashed #92400e;
+      background-color: #ffffff;
+      border-radius: 5px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5px;
+      box-sizing: border-box;
+      z-index: 1;
+    }
+
+    .pe-fifo.active {
+      background-color: #fef3c7;
+      border-style: solid;
+    }
+
+    /* Title texts inside PEs with top margin to top border */
+    .pe-title { color: #7866B3; font-size: 12px; font-weight: 700; line-height: 0.8; margin-top: 3px; }
+    .pe-title-act { color: #d97706; font-size: 12px; font-weight: 700; line-height: 0.8; margin-top: 3px; }
+    .pe-title-sum { color: #4b5563; font-size: 12px; font-weight: 700; line-height: 0.8; margin-top: 3px; }
+    .pe-title-div { color: #0d9488; font-size: 12px; font-weight: 700; line-height: 0.8; margin-top: 3px; }
+    .pe-title-fifo { color: #92400e; font-size: 11px; font-weight: 700; }
+
+    /* Middle-line texts colorcoded to match PE border colors */
+    .pe-weight { color: #1d4ed8; font-size: 12px; font-weight: 700; line-height: 0.8; }
+    .pe-op-act { color: #d97706; font-size: 12px; font-weight: 700; line-height: 0.8; }
+    .pe-op-sum { color: #4b5563; font-size: 12px; font-weight: 700; line-height: 0.8; }
+    .pe-op-div { color: #0d9488; font-size: 12px; font-weight: 700; line-height: 0.8; }
+
+    .pe-formula { font-size: 11px; font-weight: 700; line-height: 0.8; min-height: 12px; }
+
+    /* Wrapper for Input Queue + Arrow pointing into Systolic Array */
+    .input-row-wrapper {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    /* Input Queue Container styling (dashed outer box covering only the 5 slots) */
+    .input-queue-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      border: 1px dashed #fca5a5;
+      background-color: #ffffff;
+      border-radius: 6px;
+      box-sizing: border-box;
+      z-index: 1;
+      height: 32px;
+    }
+
+    .input-cell-slot {
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed #e5e7eb;
+      background-color: #f9fafb;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .input-cell-slot.has-val {
+      border: 1px solid #fca5a5;
+      background-color: #fef2f2;
+    }
+
+    .input-arrow-connecting {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .input-queue-label {
+      position: absolute;
+      top: -18px;
+      left: 0;
+      width: 134px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #dc2626;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .val-text { display: inline-block; text-align: center; font-size: 13px; }
+    .val-text.red { color: #dc2626; font-weight: 700; }
+    .val-text.purple { color: #7866B3; font-weight: 700; }
+    .val-text.blue { color: #1d4ed8; font-weight: 700; }
+    .val-text.amber { color: #d97706; font-weight: 700; }
+    .val-text.dark-gray { color: #4b5563; font-weight: 700; }
+    .val-text.teal { color: #0d9488; font-weight: 700; }
+    .val-text.indigo { color: #4f46e5; font-weight: 700; }
+    .val-text.brown { color: #92400e; font-weight: 700; }
+
+    .arrow-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+
+    .arrow-line-h {
+      width: 100%;
+      height: 2px;
+      background-color: #cbd5e1;
+      position: relative;
+    }
+
+    .arrow-line-h::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: -3px;
+      border-width: 4px 0 4px 5px;
+      border-style: solid;
+      border-color: transparent transparent transparent #cbd5e1;
+    }
+
+    .arrow-line-h-left {
+      width: 100%;
+      height: 2px;
+      background-color: #cbd5e1;
+      position: relative;
+    }
+
+    .arrow-line-h-left::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: -3px;
+      border-width: 4px 5px 4px 0;
+      border-style: solid;
+      border-color: transparent #cbd5e1 transparent transparent;
+    }
+
+    .arrow-line-v {
+      height: 100%;
+      width: 2px;
+      background-color: #cbd5e1;
+      position: relative;
+    }
+
+    .arrow-line-v::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: -3px;
+      border-width: 5px 4px 0 4px;
+      border-style: solid;
+      border-color: #cbd5e1 transparent transparent transparent;
+    }
+
+    .arrow-line-v-multi {
+      width: 2px;
+      background-color: #cbd5e1;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .arrow-line-v-multi::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: -3px;
+      border-width: 5px 4px 0 4px;
+      border-style: solid;
+      border-color: #cbd5e1 transparent transparent transparent;
+    }
+
+    /* Vertical line extending down without arrowhead at the bottom */
+    .arrow-line-v-down-no-head {
+      width: 2px;
+      background-color: #cbd5e1;
+      position: absolute;
+      right: 0;
+      top: 50%;
+    }
+
+    .h-val-position {
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      line-height: 1;
+    }
+
+    .v-val-position {
+      position: absolute;
+      right: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+      line-height: 1;
+    }
+
+    .output-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100%;
+      padding-top: 2px;
+      z-index: 1;
+    }
+
+    /* Output Queues: 7-element vertical slots */
+    .output-history {
+      display: flex;
+      flex-direction: column; /* First output stays at top row; new output pushes existing down */
+      gap: 4px;
+      align-items: center;
+      width: 68px;
+      padding: 4px;
+      box-sizing: border-box;
+      border-radius: 6px;
+      background-color: #ffffff;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+
+    .output-history.purple-queue {
+      border: 1px dashed #7866B3;
+    }
+
+    .output-history.teal-queue {
+      border: 1px dashed #0d9488;
+    }
+
+    .output-cell-slot {
+      height: 22px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed #e5e7eb;
+      border-radius: 4px;
+      background-color: #f9fafb;
+      box-sizing: border-box;
+    }
+
+    .output-cell-slot.has-val {
+      border-style: solid;
+    }
+
+    .output-cell-slot.has-val.purple-cell {
+      border-color: #c4b5fd;
+      background-color: #f5f3ff;
+    }
+
+    .output-cell-slot.has-val.teal-cell {
+      border-color: #99f6e4;
+      background-color: #f0fdfa;
+    }
+
+    .output-queue-label {
+      grid-column: 2 / -1;
+      margin-top: 6px;
+      font-size: 15px;
+      font-weight: 700;
+      text-align: center;
+      white-space: nowrap;
+      width: 100%;
+    }
+
+    .output-queue-label.purple {
+      color: #7866B3;
+    }
+
+    .output-queue-label.teal {
+      color: #0d9488;
+    }
+
+    .empty-slot {
+      height: 20px;
+      width: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="fit-wrap" style="width:100%; overflow:hidden;">
+  <div class="main-layout" id="main-layout">
+    <!-- Animation Matrix Section (Moved to Left) -->
+    <div class="animation-wrapper">
+      <!-- Toolbar placed directly on top of Systolic Array -->
+      <div class="top-toolbar">
+        <div class="controls">
+          <button class="btn-icon" id="btn-play" title="Play/Pause">
+            <svg id="icon-pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            <svg id="icon-play" viewBox="0 0 24 24" style="display:none;"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <button class="btn-icon" id="btn-step-back" title="Step Back">
+            <svg viewBox="0 0 24 24"><path d="M18 6l-8.5 6 8.5 6V6zM8 6v12H6V6h2z"/></svg>
+          </button>
+          <button class="btn-icon" id="btn-step" title="Step Forward">
+            <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+          </button>
+          <button class="btn-icon" id="btn-reset" title="Reset">
+            <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+          </button>
+          <span class="cycle-counter" id="cycle-counter">Cycle: 00/35</span>
+        </div>
+
+        <!-- On/Off Switch for Output View Target -->
+        <div class="switch-container">
+          <span class="switch-label" id="switch-mode-label">With softmax: OFF</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="target-view-toggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="systolic-container grid-xtw" id="grid">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Matrix Configurations Section (Moved to Right) -->
+    <div class="matrix-config-container">
+      <!-- Apply Matrices button at the top of the right block -->
+      <button class="btn-apply" id="btn-apply-matrices" style="width: 100%; margin-bottom: 4px; font-size: 12px; padding: 0 8px;">Apply Matrices</button>
+
+      <div class="matrix-block">
+        <div class="matrix-title color-red">Input Matrix X (3×4) [-2..1]</div>
+        <div class="matrix-grid-input" id="grid-x" style="grid-template-columns: repeat(4, 36px);"></div>
+      </div>
+
+      <div class="math-operator">×</div>
+
+      <div class="matrix-block">
+        <div class="matrix-title color-blue">Weight Matrix W (3×4) [-2..1]</div>
+        <div class="matrix-grid-input" id="grid-w" style="grid-template-columns: repeat(4, 36px);"></div>
+      </div>
+
+      <div class="math-operator">=</div>
+
+      <div class="matrix-block">
+        <div class="matrix-title color-purple">Output Matrix (X<sup>T</sup>W)</div>
+        <div class="matrix-result-grid purple-border" id="grid-xtw" style="grid-template-columns: repeat(4, 36px);"></div>
+      </div>
+
+      <!-- Dynamically toggleable Exponents and Softmax section -->
+      <div id="deskew-matrix-section" style="display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%;">
+        <div class="math-operator">↓</div>
+        <div class="matrix-block">
+          <div class="matrix-title color-amber">Exponents (2<sup>X<sup>T</sup>W</sup>)</div>
+          <div class="matrix-result-grid amber-border" id="grid-exp" style="grid-template-columns: repeat(4, 36px);"></div>
+        </div>
+
+        <div class="math-operator">↓</div>
+        <div class="matrix-block">
+          <div class="matrix-title color-teal">Softmax</div>
+          <div class="matrix-result-grid teal-border" id="grid-y" style="grid-template-columns: repeat(4, 36px);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <script>
+    const ROWS = 3;
+    const COLS = 4;
+    const QUEUE_SLOTS = 5; // 1x5 cells per row on the left
+    const OUT_QUEUE_SIZE = 7; // 7-element long output queues
+    const MAX_CYCLES = 35;
+    const MAX_DESKEW_STAGES = 7; // 7 stages for (7, 5, 3, 1) DLY configuration
+
+    const DESKEW_STAGES_PER_COL = [7, 5, 3, 1];
+
+    let rawX = [
+      [-1,  1, -2,  0],
+      [ 0, -2,  1, -1],
+      [ 1, -1,  0, -2]
+    ];
+
+    let weights = [
+      [-2,  1,  0, -1],
+      [ 1, -2, -1,  0],
+      [-1,  0,  1, -2]
+    ];
+
+    let cycle = 0;
+    let timer = null;
+    let isPlaying = true;
+    let selectedTargetView = 'xtw'; // Default mode ('xtw' or 'deskewed')
+    let historyState = []; // State history array for stepping backward
+
+    let currentQueues = [];
+    let hInputs = Array(ROWS).fill(null).map(() => Array(COLS).fill(0));
+    let vPsums = Array(ROWS + 1).fill(null).map(() => Array(COLS).fill(0));
+    let activeInputs = Array(ROWS).fill(null).map(() => Array(COLS).fill(0));
+    let activeIncomingPsums = Array(ROWS).fill(null).map(() => Array(COLS).fill(0));
+
+    let expInputs = Array(COLS).fill(0);
+    let expOutputs = Array(COLS).fill(0);
+
+    let sumLeftRegs = Array(COLS).fill(0);
+    let sumTopInputs = Array(COLS).fill(0);
+    let sumLeftInputs = Array(COLS).fill(0);
+    let sumOutputs = Array(COLS).fill(0);
+
+    let deskewBuffers = Array(COLS).fill(null).map((_, c) => Array(DESKEW_STAGES_PER_COL[c]).fill(0));
+
+    let divRightRegs = Array(COLS).fill(0); // Registers to delay right-to-left DIV feed by 1 cycle
+    let divTopInputs = Array(COLS).fill(0);
+    let divRightInputs = Array(COLS).fill(0);
+    let divOutputs = Array(COLS).fill(0);
+
+    let outputs = Array(COLS).fill(null).map(() => []);
+
+    function clampVal(v) {
+      let parsed = parseInt(v);
+      if (isNaN(parsed)) return 0;
+      return Math.max(-2, Math.min(1, parsed));
+    }
+
+    function buildMatrixInputs() {
+      const gridX = document.getElementById('grid-x');
+      const gridW = document.getElementById('grid-w');
+      gridX.innerHTML = '';
+      gridW.innerHTML = '';
+
+      for (let r = 0; r < 3; r++) {
+        for (let c = 0; c < 4; c++) {
+          const inp = document.createElement('input');
+          inp.type = 'text';
+          inp.value = rawX[r][c];
+          inp.id = `x-${r}-${c}`;
+          inp.addEventListener('change', syncAndRecalculate);
+          gridX.appendChild(inp);
+        }
+      }
+
+      for (let r = 0; r < 3; r++) {
+        for (let c = 0; c < 4; c++) {
+          const inp = document.createElement('input');
+          inp.type = 'text';
+          inp.value = weights[r][c];
+          inp.id = `w-${r}-${c}`;
+          inp.addEventListener('change', syncAndRecalculate);
+          gridW.appendChild(inp);
+        }
+      }
+
+      syncAndRecalculate();
+    }
+
+    function syncAndRecalculate() {
+      for (let r = 0; r < 3; r++) {
+        for (let c = 0; c < 4; c++) {
+          const el = document.getElementById(`x-${r}-${c}`);
+          rawX[r][c] = clampVal(el.value);
+          el.value = rawX[r][c];
+        }
+      }
+
+      for (let r = 0; r < 3; r++) {
+        for (let c = 0; c < 4; c++) {
+          const el = document.getElementById(`w-${r}-${c}`);
+          weights[r][c] = clampVal(el.value);
+          el.value = weights[r][c];
+        }
+      }
+
+      let XT = Array(4).fill(null).map(() => Array(3).fill(0));
+      for (let r = 0; r < 3; r++) {
+        for (let c = 0; c < 4; c++) {
+          XT[c][r] = rawX[r][c];
+        }
+      }
+
+      const gridXTW = document.getElementById('grid-xtw');
+      gridXTW.innerHTML = '';
+      let xtwMatrix = Array(4).fill(null).map(() => Array(4).fill(0));
+
+      for (let r = 0; r < 4; r++) {
+        for (let c = 0; c < 4; c++) {
+          let dotProduct = 0;
+          for (let k = 0; k < 3; k++) {
+            dotProduct += XT[r][k] * weights[k][c];
+          }
+          xtwMatrix[r][c] = dotProduct;
+
+          const cell = document.createElement('div');
+          cell.className = 'matrix-result-cell purple-bg';
+          cell.innerText = dotProduct;
+          gridXTW.appendChild(cell);
+        }
+      }
+
+      const gridExp = document.getElementById('grid-exp');
+      gridExp.innerHTML = '';
+      for (let r = 0; r < 4; r++) {
+        for (let c = 0; c < 4; c++) {
+          let dotProduct = xtwMatrix[r][c];
+          let expVal = Math.pow(2, dotProduct);
+
+          const cell = document.createElement('div');
+          cell.className = 'matrix-result-cell amber-bg';
+          cell.innerText = expVal % 1 === 0 ? expVal : expVal.toFixed(2);
+          gridExp.appendChild(cell);
+        }
+      }
+
+      const gridY = document.getElementById('grid-y');
+      gridY.innerHTML = '';
+
+      for (let r = 0; r < 4; r++) {
+        let runningPrefixSum = 0;
+        let columnSum = 0;
+        for (let c = 0; c < 4; c++) {
+          let dotProduct = xtwMatrix[r][c];
+          let actVal = Math.pow(2, dotProduct);
+          runningPrefixSum += actVal;
+        }
+        columnSum = runningPrefixSum;
+
+        for (let c = 0; c < 4; c++) {
+          let dotProduct = xtwMatrix[r][c];
+          let actVal = Math.pow(2, dotProduct);
+          let divVal = columnSum !== 0 ? actVal / columnSum : 0;
+
+          const cell = document.createElement('div');
+          cell.className = 'matrix-result-cell teal-bg';
+          cell.innerText = divVal.toFixed(divVal % 1 === 0 ? 0 : 2);
+          gridY.appendChild(cell);
+        }
+      }
+    }
+
+    function updateLeftPanelVisibility() {
+      const deskewSection = document.getElementById('deskew-matrix-section');
+      if (deskewSection) {
+        deskewSection.style.display = selectedTargetView === 'deskewed' ? 'flex' : 'none';
+      }
+    }
+
+    function applyMatrixChanges() {
+      syncAndRecalculate();
+      buildGrid();
+      reset();
+    }
+
+    function captureState() {
+      return JSON.parse(JSON.stringify({
+        cycle,
+        currentQueues,
+        hInputs,
+        vPsums,
+        activeInputs,
+        activeIncomingPsums,
+        expInputs,
+        expOutputs,
+        sumLeftRegs,
+        sumTopInputs,
+        sumLeftInputs,
+        sumOutputs,
+        deskewBuffers,
+        divRightRegs,
+        divTopInputs,
+        divRightInputs,
+        divOutputs,
+        outputs
+      }));
+    }
+
+    function restoreState(snapshot) {
+      cycle = snapshot.cycle;
+      currentQueues = snapshot.currentQueues;
+      hInputs = snapshot.hInputs;
+      vPsums = snapshot.vPsums;
+      activeInputs = snapshot.activeInputs;
+      activeIncomingPsums = snapshot.activeIncomingPsums;
+      expInputs = snapshot.expInputs;
+      expOutputs = snapshot.expOutputs;
+      sumLeftRegs = snapshot.sumLeftRegs;
+      sumTopInputs = snapshot.sumTopInputs;
+      sumLeftInputs = snapshot.sumLeftInputs;
+      sumOutputs = snapshot.sumOutputs;
+      deskewBuffers = snapshot.deskewBuffers;
+      divRightRegs = snapshot.divRightRegs;
+      divTopInputs = snapshot.divTopInputs;
+      divRightInputs = snapshot.divRightInputs;
+      divOutputs = snapshot.divOutputs;
+      outputs = snapshot.outputs;
+    }
+
+    function initStates() {
+      currentQueues = [];
+      for (let r = 0; r < ROWS; r++) {
+        let q = [];
+        for (let delay = 0; delay < (ROWS - 1 - r); delay++) {
+          q.push(null);
+        }
+        for (let c = COLS - 1; c >= 0; c--) {
+          q.push(rawX[r][c]);
+        }
+        for (let delay = 0; delay < r; delay++) {
+          q.push(null);
+        }
+        currentQueues.push(q);
+      }
+
+      hInputs = Array(ROWS).fill(null).map(() => Array(COLS).fill(0));
+      vPsums = Array(ROWS + 1).fill(null).map(() => Array(COLS).fill(0));
+      activeInputs = Array(ROWS).fill(null).map(() => Array(COLS).fill(0));
+      activeIncomingPsums = Array(ROWS).fill(null).map(() => Array(COLS).fill(0));
+      expInputs = Array(COLS).fill(0);
+      expOutputs = Array(COLS).fill(0);
+
+      sumLeftRegs = Array(COLS).fill(0);
+      sumLeftInputs = Array(COLS).fill(0);
+      sumTopInputs = Array(COLS).fill(0);
+      sumOutputs = Array(COLS).fill(0);
+
+      deskewBuffers = Array(COLS).fill(null).map((_, c) => Array(DESKEW_STAGES_PER_COL[c]).fill(0));
+
+      divRightRegs = Array(COLS).fill(0);
+      divTopInputs = Array(COLS).fill(0);
+      divRightInputs = Array(COLS).fill(0);
+      divOutputs = Array(COLS).fill(0);
+
+      outputs = Array(COLS).fill(null).map(() => []);
+      historyState = [];
+    }
+
+    function buildGrid() {
+      const grid = document.getElementById('grid');
+      grid.className = `systolic-container ${selectedTargetView === 'xtw' ? 'grid-xtw' : 'grid-deskewed'}`;
+      grid.innerHTML = `
+        <div class="systolic-array-box">
+          <div class="systolic-array-box-label">systolic array</div>
+        </div>
+      `;
+
+      // 1-3. Main Systolic Array Rows (Rows 0-2)
+      for (let r = 0; r < ROWS; r++) {
+        // Wrapper for Input Queue + Connecting Arrow
+        const inRowWrapper = document.createElement('div');
+        inRowWrapper.className = 'input-row-wrapper';
+
+        if (r === 0) {
+          const inTitle = document.createElement('div');
+          inTitle.className = 'input-queue-label';
+          inTitle.innerText = 'Input Matrix X';
+          inRowWrapper.appendChild(inTitle);
+        }
+
+        // Input Queue: Dashed box containing strictly the 5 input cells
+        const inQueueBox = document.createElement('div');
+        inQueueBox.className = 'input-queue-container';
+        inQueueBox.id = `input-queue-${r}`;
+        
+        for (let slot = 0; slot < QUEUE_SLOTS; slot++) {
+          const slotDiv = document.createElement('div');
+          slotDiv.className = 'input-cell-slot';
+          slotDiv.id = `queue-${r}-slot-${slot}`;
+          inQueueBox.appendChild(slotDiv);
+        }
+
+        inRowWrapper.appendChild(inQueueBox);
+
+        // Arrow outside dashed box connecting input queue into PE
+        const inArrowCell = document.createElement('div');
+        inArrowCell.className = 'input-arrow-connecting';
+        inArrowCell.id = `queue-${r}-arrow-cell`;
+        inArrowCell.innerHTML = `<div class="arrow-line-h"></div>`;
+        inRowWrapper.appendChild(inArrowCell);
+
+        grid.appendChild(inRowWrapper);
+
+        for (let c = 0; c < COLS; c++) {
+          const pe = document.createElement('div');
+          pe.className = 'pe';
+          pe.id = `pe-${r}-${c}`;
+          pe.innerHTML = `
+            <div class="pe-title">PE</div>
+            <div class="pe-weight">(W=${weights[r][c]})</div>
+            <div class="pe-formula" id="pe-formula-${r}-${c}"></div>
+          `;
+          grid.appendChild(pe);
+
+          const hArrow = document.createElement('div');
+          hArrow.className = 'arrow-container';
+          if (c < COLS - 1) {
+            hArrow.innerHTML = `
+              <div class="arrow-line-h">
+                <div class="val-text red h-val-position" id="h-val-${r}-${c}" style="display:none;"></div>
+              </div>
+            `;
+          }
+          grid.appendChild(hArrow);
+        }
+
+        grid.appendChild(document.createElement('div'));
+
+        for (let c = 0; c < COLS; c++) {
+          const vArrow = document.createElement('div');
+          vArrow.className = 'arrow-container';
+          vArrow.innerHTML = `
+            <div class="arrow-line-v">
+              <div class="val-text purple v-val-position" id="v-val-${r}-${c}" style="display:none;"></div>
+            </div>
+          `;
+          grid.appendChild(vArrow);
+
+          grid.appendChild(document.createElement('div'));
+        }
+      }
+
+      if (selectedTargetView === 'deskewed') {
+        // 4. Elementwise 2^x Activation PE Row
+        grid.appendChild(document.createElement('div'));
+
+        for (let c = 0; c < COLS; c++) {
+          const expPe = document.createElement('div');
+          expPe.className = 'pe pe-activation';
+          expPe.id = `exp-pe-${c}`;
+          expPe.innerHTML = `
+            <div class="pe-title-act">ACT PE</div>
+            <div class="pe-op-act">(2<sup>x</sup>)</div>
+            <div class="pe-formula" id="exp-formula-${c}"></div>
+          `;
+          grid.appendChild(expPe);
+
+          grid.appendChild(document.createElement('div'));
+        }
+
+        // 5. Vertical Arrows Below Activation Row
+        grid.appendChild(document.createElement('div'));
+
+        for (let c = 0; c < COLS; c++) {
+          const vArrow = document.createElement('div');
+          vArrow.className = 'arrow-container';
+          vArrow.innerHTML = `
+            <div class="arrow-line-v">
+              <div class="val-text amber v-val-position" id="exp-v-val-${c}" style="display:none;"></div>
+            </div>
+          `;
+          grid.appendChild(vArrow);
+
+          grid.appendChild(document.createElement('div'));
+        }
+
+        // 6. Horizontal Sum PE Row
+        grid.appendChild(document.createElement('div'));
+
+        for (let c = 0; c < COLS; c++) {
+          const sumPe = document.createElement('div');
+          sumPe.className = 'pe pe-sum';
+          sumPe.id = `sum-pe-${c}`;
+          sumPe.innerHTML = `
+            <div class="pe-title-sum">SUM PE</div>
+            <div class="pe-op-sum">(R=L+<span class="color-amber">U</span>)</div>
+            <div class="pe-formula" id="sum-formula-${c}"></div>
+          `;
+          grid.appendChild(sumPe);
+
+          const hArrow = document.createElement('div');
+          hArrow.className = 'arrow-container';
+          if (c < COLS - 1) {
+            hArrow.innerHTML = `
+              <div class="arrow-line-h">
+                <div class="val-text dark-gray h-val-position" id="sum-h-val-${c}" style="display:none;"></div>
+              </div>
+            `;
+          } else {
+            // Right-most SUM PE arrow pointing RIGHT with a vertical connecting line starting directly from its right arrowhead point
+            const vertConnectHeight = (MAX_DESKEW_STAGES * 66) + 84;
+            hArrow.innerHTML = `
+              <div class="arrow-line-h">
+                <div class="val-text dark-gray h-val-position" id="sum-h-val-${c}" style="display:none;"></div>
+                <div class="arrow-line-v-down-no-head" style="height: ${vertConnectHeight}px;"></div>
+              </div>
+            `;
+          }
+          grid.appendChild(hArrow);
+        }
+
+        // 7. Vertical Arrows Below Horizontal Sum PE Row
+        grid.appendChild(document.createElement('div'));
+
+        for (let c = 0; c < COLS; c++) {
+          const numStages = DESKEW_STAGES_PER_COL[c];
+          const vArrow = document.createElement('div');
+          vArrow.className = 'arrow-container';
+
+          if (numStages === 0) {
+            const totalSpanHeight = (MAX_DESKEW_STAGES * 66) + 40; 
+            vArrow.innerHTML = `
+              <div class="arrow-line-v-multi" style="height: ${totalSpanHeight}px; top: 0;">
+                <div class="val-text amber v-val-position" id="sum-v-val-${c}" style="display:none;"></div>
+              </div>
+            `;
+          } else {
+            vArrow.innerHTML = `
+              <div class="arrow-line-v">
+                <div class="val-text amber v-val-position" id="sum-v-val-${c}" style="display:none;"></div>
+              </div>
+            `;
+          }
+
+          grid.appendChild(vArrow);
+
+          grid.appendChild(document.createElement('div'));
+        }
+
+        // 8. Triangular De-skew FIFO Delay Structure (7 rows max)
+        for (let s = 0; s < MAX_DESKEW_STAGES; s++) {
+          grid.appendChild(document.createElement('div'));
+
+          for (let c = 0; c < COLS; c++) {
+            const numStages = DESKEW_STAGES_PER_COL[c];
+            if (s < numStages) {
+              const fifoPe = document.createElement('div');
+              fifoPe.className = 'pe-fifo';
+              fifoPe.id = `deskew-${c}-${s}`;
+              fifoPe.innerHTML = `
+                <span class="pe-title-fifo">DLY</span>
+                <span class="val-text brown" id="deskew-val-${c}-${s}"></span>
+              `;
+              grid.appendChild(fifoPe);
+            } else {
+              grid.appendChild(document.createElement('div'));
+            }
+
+            grid.appendChild(document.createElement('div'));
+          }
+
+          grid.appendChild(document.createElement('div'));
+
+          for (let c = 0; c < COLS; c++) {
+            const numStages = DESKEW_STAGES_PER_COL[c];
+            const vArrow = document.createElement('div');
+            vArrow.className = 'arrow-container';
+
+            if (s < numStages) {
+              if (s === numStages - 1) {
+                const remainingGapRows = MAX_DESKEW_STAGES - 1 - s;
+                const extHeight = 40 + (remainingGapRows * 66);
+                vArrow.innerHTML = `
+                  <div class="arrow-line-v-multi" style="height: ${extHeight}px; top: 0;">
+                    <div class="val-text brown v-val-position" id="deskew-arrow-val-${c}-${s}" style="display:none;"></div>
+                  </div>
+                `;
+              } else {
+                vArrow.innerHTML = `
+                  <div class="arrow-line-v">
+                    <div class="val-text brown v-val-position" id="deskew-arrow-val-${c}-${s}" style="display:none;"></div>
+                  </div>
+                `;
+              }
+            }
+
+            grid.appendChild(vArrow);
+
+            grid.appendChild(document.createElement('div'));
+          }
+        }
+
+        // 9. Division PE Row
+        grid.appendChild(document.createElement('div'));
+
+        for (let c = 0; c < COLS; c++) {
+          const divPe = document.createElement('div');
+          divPe.className = 'pe pe-div';
+          divPe.id = `div-pe-${c}`;
+          divPe.innerHTML = `
+            <div class="pe-title-div">DIV PE</div>
+            <div class="pe-op-div">(D=<span class="color-brown">U</span>/R)</div>
+            <div class="pe-formula" id="div-formula-${c}"></div>
+          `;
+          grid.appendChild(divPe);
+
+          const hArrowLeft = document.createElement('div');
+          hArrowLeft.className = 'arrow-container';
+          if (c < COLS - 1) {
+            hArrowLeft.innerHTML = `
+              <div class="arrow-line-h-left">
+                <div class="val-text teal h-val-position" id="div-h-val-${c}" style="display:none;"></div>
+              </div>
+            `;
+          } else {
+            // Right-most DIV PE arrow pointing LEFT with right tip perfectly meeting vertical line from SUM PE
+            hArrowLeft.innerHTML = `
+              <div class="arrow-line-h-left">
+                <div class="val-text dark-gray h-val-position" id="div-right-in-val" style="display:none;"></div>
+              </div>
+            `;
+          }
+          grid.appendChild(hArrowLeft);
+        }
+
+        // 10. Vertical Arrows Below Division PE Row
+        grid.appendChild(document.createElement('div'));
+
+        for (let c = 0; c < COLS; c++) {
+          const vArrow = document.createElement('div');
+          vArrow.className = 'arrow-container';
+          vArrow.innerHTML = `
+            <div class="arrow-line-v">
+              <div class="val-text teal v-val-position" id="div-v-val-${c}" style="display:none;"></div>
+            </div>
+          `;
+          grid.appendChild(vArrow);
+
+          grid.appendChild(document.createElement('div'));
+        }
+      }
+
+      // 11. Output Columns History Queues (7-element long for EACH column)
+      grid.appendChild(document.createElement('div'));
+
+      const queueColorClass = selectedTargetView === 'xtw' ? 'purple-queue' : 'teal-queue';
+      const labelColorClass = selectedTargetView === 'xtw' ? 'purple' : 'teal';
+      const labelText = selectedTargetView === 'xtw' ? 'Output Matrix (X<sup>T</sup>W)' : 'Softmax';
+
+      for (let c = 0; c < COLS; c++) {
+        const outDiv = document.createElement('div');
+        outDiv.className = 'output-container';
+        outDiv.innerHTML = `
+          <div class="output-history ${queueColorClass}" id="out-hist-${c}"></div>
+        `;
+        grid.appendChild(outDiv);
+
+        grid.appendChild(document.createElement('div'));
+      }
+
+      // Single centered label directly beneath all 4 output column queues
+      const sharedLabelDiv = document.createElement('div');
+      sharedLabelDiv.className = `output-queue-label ${labelColorClass}`;
+      sharedLabelDiv.innerHTML = labelText;
+      grid.appendChild(sharedLabelDiv);
+    }
+
+    function step() {
+      historyState.push(captureState());
+
+      cycle++;
+      if (cycle > MAX_CYCLES) {
+        cycle = 1;
+        initStates();
+        renderUI();
+        return;
+      }
+
+      const fedInputs = [];
+      for (let r = 0; r < ROWS; r++) {
+        const popped = currentQueues[r].pop();
+        currentQueues[r].unshift(null);
+        fedInputs[r] = popped !== null ? popped : 0;
+      }
+
+      const nextH = Array(ROWS).fill(null).map(() => Array(COLS).fill(0));
+      const nextV = Array(ROWS + 1).fill(null).map(() => Array(COLS).fill(0));
+      const currentInputs = Array(ROWS).fill(null).map(() => Array(COLS).fill(0));
+      const currentIncomingPsums = Array(ROWS).fill(null).map(() => Array(COLS).fill(0));
+
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          let inVal = (c === 0) ? fedInputs[r] : hInputs[r][c - 1];
+          let topSum = (r === 0) ? 0 : vPsums[r][c];
+
+          currentInputs[r][c] = inVal;
+          currentIncomingPsums[r][c] = topSum;
+
+          nextH[r][c] = inVal;
+
+          if (inVal !== 0 || topSum !== 0) {
+            nextV[r + 1][c] = topSum + (inVal * weights[r][c]);
+          } else {
+            nextV[r + 1][c] = 0;
+          }
+        }
+      }
+
+      const currentExpInputs = Array(COLS).fill(0);
+      const nextExpOutputs = Array(COLS).fill(0);
+
+      for (let c = 0; c < COLS; c++) {
+        let inPsum = vPsums[ROWS][c]; 
+        currentExpInputs[c] = inPsum;
+        if (inPsum !== 0) {
+          nextExpOutputs[c] = Math.pow(2, inPsum);
+        } else {
+          nextExpOutputs[c] = 0;
+        }
+      }
+
+      const currentSumTopInputs = Array(COLS).fill(0);
+      const currentSumLeftInputs = Array(COLS).fill(0);
+      const nextSumOutputs = Array(COLS).fill(0);
+      const nextSumLeftRegs = Array(COLS).fill(0);
+
+      for (let c = 0; c < COLS; c++) {
+        let topVal = expOutputs[c];
+        let leftVal = (c === 0) ? 0 : sumLeftRegs[c - 1]; 
+
+        currentSumTopInputs[c] = topVal;
+        currentSumLeftInputs[c] = leftVal;
+
+        if (topVal !== 0 || leftVal !== 0) {
+          nextSumOutputs[c] = topVal + leftVal;
+        } else {
+          nextSumOutputs[c] = 0;
+        }
+
+        nextSumLeftRegs[c] = nextSumOutputs[c];
+      }
+
+      const nextDeskewBuffers = Array(COLS).fill(null).map((_, c) => Array(DESKEW_STAGES_PER_COL[c]).fill(0));
+      const deskewedOutputs = Array(COLS).fill(0);
+
+      for (let c = 0; c < COLS; c++) {
+        const numStages = DESKEW_STAGES_PER_COL[c];
+        let topValToPassDown = expOutputs[c];
+
+        if (numStages > 0) {
+          nextDeskewBuffers[c][0] = topValToPassDown;
+          for (let s = 1; s < numStages; s++) {
+            nextDeskewBuffers[c][s] = deskewBuffers[c][s - 1];
+          }
+          deskewedOutputs[c] = deskewBuffers[c][numStages - 1];
+        } else {
+          deskewedOutputs[c] = topValToPassDown;
+        }
+      }
+
+      const currentDivTopInputs = Array(COLS).fill(0);
+      const currentDivRightInputs = Array(COLS).fill(0);
+      const nextDivOutputs = Array(COLS).fill(0);
+      const nextDivRightRegs = Array(COLS).fill(0);
+
+      for (let c = COLS - 1; c >= 0; c--) {
+        let b = deskewedOutputs[c];
+        // Read input from divRightRegs (1 cycle delayed right-to-left transfer)
+        let c_div = (c === COLS - 1) ? sumOutputs[COLS - 1] : divRightRegs[c + 1];
+
+        currentDivTopInputs[c] = b;
+        currentDivRightInputs[c] = c_div;
+
+        if (b !== 0 && c_div !== 0) {
+          nextDivOutputs[c] = b / c_div;
+        } else {
+          nextDivOutputs[c] = 0;
+        }
+
+        // Pass c_div to the left neighbor with a 1-cycle delay register step
+        if (c > 0) {
+          nextDivRightRegs[c] = c_div;
+        }
+      }
+
+      let cycleHasAnyPsum = false;
+      for (let c = 0; c < COLS; c++) {
+        if (nextV[ROWS][c] !== 0) {
+          cycleHasAnyPsum = true;
+          break;
+        }
+      }
+
+      let cycleHasAnyOutput = false;
+      for (let c = 0; c < COLS; c++) {
+        if (nextDivOutputs[c] !== 0) {
+          cycleHasAnyOutput = true;
+          break;
+        }
+      }
+
+      if (selectedTargetView === 'xtw') {
+        if (cycleHasAnyPsum || (outputs[0].length > 0 && outputs[0].length < OUT_QUEUE_SIZE)) {
+          for (let c = 0; c < COLS; c++) {
+            let val = nextV[ROWS][c];
+            outputs[c].unshift(val !== 0 ? val : null); // Unshift pushes new values to index 0 (top row), shifting existing down
+            if (outputs[c].length > OUT_QUEUE_SIZE) {
+              outputs[c].pop();
+            }
+          }
+        }
+      } else {
+        if (cycleHasAnyOutput || (outputs[0].length > 0 && outputs[0].length < OUT_QUEUE_SIZE)) {
+          for (let c = 0; c < COLS; c++) {
+            let val = nextDivOutputs[c];
+            outputs[c].unshift(val !== 0 ? val : null); // Unshift pushes new values to index 0 (top row), shifting existing down
+            if (outputs[c].length > OUT_QUEUE_SIZE) {
+              outputs[c].pop();
+            }
+          }
+        }
+      }
+
+      hInputs = nextH;
+      vPsums = nextV;
+      activeInputs = currentInputs;
+      activeIncomingPsums = currentIncomingPsums;
+      expInputs = currentExpInputs;
+      expOutputs = nextExpOutputs;
+      sumTopInputs = currentSumTopInputs;
+      sumLeftInputs = currentSumLeftInputs;
+      sumOutputs = nextSumOutputs;
+      sumLeftRegs = nextSumLeftRegs;
+      deskewBuffers = nextDeskewBuffers;
+      divRightRegs = nextDivRightRegs;
+      divTopInputs = currentDivTopInputs;
+      divRightInputs = currentDivRightInputs;
+      divOutputs = nextDivOutputs;
+
+      renderUI();
+    }
+
+    function stepBack() {
+      if (historyState.length === 0) return;
+      const prev = historyState.pop();
+      restoreState(prev);
+      renderUI();
+    }
+
+    function renderUI() {
+      const counterEl = document.getElementById('cycle-counter');
+      if (counterEl) {
+        const paddedCycle = String(cycle).padStart(2, '0');
+        const paddedMax = String(MAX_CYCLES).padStart(2, '0');
+        counterEl.innerText = `Cycle: ${paddedCycle}/${paddedMax}`;
+      }
+
+      for (let r = 0; r < ROWS; r++) {
+        for (let slot = 0; slot < QUEUE_SLOTS; slot++) {
+          const slotDiv = document.getElementById(`queue-${r}-slot-${slot}`);
+          const val = currentQueues[r][slot];
+          if (val !== null) {
+            slotDiv.classList.add('has-val');
+            slotDiv.innerHTML = `<span class="val-text red">${val}</span>`;
+          } else {
+            slotDiv.classList.remove('has-val');
+            slotDiv.innerHTML = '';
+          }
+        }
+
+        const arrowCell = document.getElementById(`queue-${r}-arrow-cell`);
+        const nextInVal = activeInputs[r][0]; // Value feeding into column 0
+        if (nextInVal !== 0) {
+          arrowCell.innerHTML = `<div class="arrow-line-h"><span class="val-text red h-val-position">${nextInVal}</span></div>`;
+        } else {
+          arrowCell.innerHTML = `<div class="arrow-line-h"></div>`;
+        }
+      }
+
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const pe = document.getElementById(`pe-${r}-${c}`);
+          const formulaEl = document.getElementById(`pe-formula-${r}-${c}`);
+          const inVal = activeInputs[r][c];
+          const prevPsum = activeIncomingPsums[r][c];
+          const isActive = inVal !== 0 || prevPsum !== 0;
+
+          if (isActive) {
+            pe.classList.add('active');
+            formulaEl.innerHTML = `<span class="val-text purple">${prevPsum}</span>+<span class="val-text red">${inVal}</span>×<span class="val-text blue">${weights[r][c]}</span>`;
+          } else {
+            pe.classList.remove('active');
+            formulaEl.innerHTML = '';
+          }
+
+          if (c < COLS - 1) {
+            const hValText = document.getElementById(`h-val-${r}-${c}`);
+            if (hInputs[r][c] !== 0) {
+              hValText.innerText = hInputs[r][c];
+              hValText.style.display = 'inline-block';
+            } else {
+              hValText.style.display = 'none';
+            }
+          }
+
+          const vValText = document.getElementById(`v-val-${r}-${c}`);
+          if (vPsums[r + 1][c] !== 0) {
+            vValText.innerText = vPsums[r + 1][c];
+            vValText.style.display = 'inline-block';
+          } else {
+            vValText.style.display = 'none';
+          }
+        }
+      }
+
+      if (selectedTargetView === 'deskewed') {
+        for (let c = 0; c < COLS; c++) {
+          const expPe = document.getElementById(`exp-pe-${c}`);
+          const expFormula = document.getElementById(`exp-formula-${c}`);
+          const inVal = expInputs[c];
+
+          if (inVal !== 0) {
+            expPe.classList.add('active');
+            expFormula.innerHTML = `2<sup><span class="val-text purple">${inVal}</span></sup>`;
+          } else {
+            expPe.classList.remove('active');
+            expFormula.innerHTML = '';
+          }
+
+          const expVValText = document.getElementById(`exp-v-val-${c}`);
+          if (expOutputs[c] !== 0) {
+            expVValText.innerText = expOutputs[c] % 1 === 0 ? expOutputs[c] : expOutputs[c].toFixed(2);
+            expVValText.style.display = 'inline-block';
+          } else {
+            expVValText.style.display = 'none';
+          }
+        }
+
+        for (let c = 0; c < COLS; c++) {
+          const sumPe = document.getElementById(`sum-pe-${c}`);
+          const sumFormula = document.getElementById(`sum-formula-${c}`);
+          const topVal = sumTopInputs[c];
+          const leftVal = sumLeftInputs[c];
+          const isActive = topVal !== 0 || leftVal !== 0;
+
+          if (isActive) {
+            sumPe.classList.add('active');
+            let topDisp = topVal % 1 === 0 ? topVal : topVal.toFixed(2);
+            let leftDisp = leftVal % 1 === 0 ? leftVal : leftVal.toFixed(2);
+            // First variable: L (SUM PE border color - dark-gray), Second variable: Up (ACT PE border color - amber)
+            sumFormula.innerHTML = `<span class="val-text dark-gray">${leftDisp}</span>+<span class="val-text amber">${topDisp}</span>`;
+          } else {
+            sumPe.classList.remove('active');
+            sumFormula.innerHTML = '';
+          }
+
+          const sumHValText = document.getElementById(`sum-h-val-${c}`);
+          if (sumOutputs[c] !== 0) {
+            sumHValText.innerText = sumOutputs[c] % 1 === 0 ? sumOutputs[c] : sumOutputs[c].toFixed(2);
+            sumHValText.style.display = 'inline-block';
+          } else {
+            sumHValText.style.display = 'none';
+          }
+
+          const sumVValText = document.getElementById(`sum-v-val-${c}`);
+          if (expOutputs[c] !== 0) {
+            sumVValText.innerText = expOutputs[c] % 1 === 0 ? expOutputs[c] : expOutputs[c].toFixed(2);
+            sumVValText.style.display = 'inline-block';
+          } else {
+            sumVValText.style.display = 'none';
+          }
+        }
+
+        for (let c = 0; c < COLS; c++) {
+          const numStages = DESKEW_STAGES_PER_COL[c];
+          for (let s = 0; s < numStages; s++) {
+            const fifoPe = document.getElementById(`deskew-${c}-${s}`);
+            const fifoVal = document.getElementById(`deskew-val-${c}-${s}`);
+            const arrowVal = document.getElementById(`deskew-arrow-val-${c}-${s}`);
+            const val = deskewBuffers[c][s];
+
+            if (val !== 0) {
+              fifoPe.classList.add('active');
+              let valDisp = val % 1 === 0 ? val : val.toFixed(2);
+              fifoVal.innerText = valDisp;
+              arrowVal.innerText = valDisp;
+              arrowVal.style.display = 'inline-block';
+            } else {
+              fifoPe.classList.remove('active');
+              fifoVal.innerText = '';
+              arrowVal.style.display = 'none';
+            }
+          }
+        }
+
+        for (let c = 0; c < COLS; c++) {
+          const divPe = document.getElementById(`div-pe-${c}`);
+          const divFormula = document.getElementById(`div-formula-${c}`);
+          const b = divTopInputs[c];
+          const c_div = divRightInputs[c];
+
+          if (b !== 0 && c_div !== 0) {
+            divPe.classList.add('active');
+            let bDisp = b % 1 === 0 ? b : b.toFixed(2);
+            let cDisp = c_div % 1 === 0 ? c_div : c_div.toFixed(2);
+            divFormula.innerHTML = `<span class="val-text brown">${bDisp}</span>/<span class="val-text teal">${cDisp}</span>`;
+          } else {
+            divPe.classList.remove('active');
+            divFormula.innerHTML = '';
+          }
+
+          if (c < COLS - 1) {
+            const divHValText = document.getElementById(`div-h-val-${c}`);
+            if (divRightInputs[c] !== 0) {
+              let passedDiv = divRightInputs[c];
+              divHValText.innerText = passedDiv % 1 === 0 ? passedDiv : passedDiv.toFixed(2);
+              divHValText.style.display = 'inline-block';
+            } else {
+              divHValText.style.display = 'none';
+            }
+          } else {
+            const divRightInValText = document.getElementById('div-right-in-val');
+            if (sumOutputs[COLS - 1] !== 0) {
+              let val = sumOutputs[COLS - 1];
+              divRightInValText.innerText = val % 1 === 0 ? val : val.toFixed(2);
+              divRightInValText.style.display = 'inline-block';
+            } else {
+              divRightInValText.style.display = 'none';
+            }
+          }
+
+          const divVValText = document.getElementById(`div-v-val-${c}`);
+          if (divOutputs[c] !== 0) {
+            divVValText.innerText = divOutputs[c] % 1 === 0 ? divOutputs[c] : divOutputs[c].toFixed(2);
+            divVValText.style.display = 'inline-block';
+          } else {
+            divVValText.style.display = 'none';
+          }
+        }
+      }
+
+      const activeColorClass = selectedTargetView === 'xtw' ? 'purple' : 'teal';
+      const cellBgClass = selectedTargetView === 'xtw' ? 'purple-cell' : 'teal-cell';
+
+      for (let c = 0; c < COLS; c++) {
+        const histDiv = document.getElementById(`out-hist-${c}`);
+        
+        let slotHtml = '';
+        for (let idx = 0; idx < OUT_QUEUE_SIZE; idx++) {
+          let val = outputs[c][idx] !== undefined ? outputs[c][idx] : null;
+          if (val !== null) {
+            let formatted = val % 1 === 0 ? val : val.toFixed(2);
+            slotHtml += `<div class="output-cell-slot has-val ${cellBgClass}"><span class="val-text ${activeColorClass}">${formatted}</span></div>`;
+          } else {
+            slotHtml += `<div class="output-cell-slot"><div class="empty-slot"></div></div>`;
+          }
+        }
+        
+        histDiv.innerHTML = slotHtml;
+      }
+    }
+
+    function startAutoPlay() {
+      if (!timer) {
+        timer = setInterval(step, 1100);
+      }
+    }
+
+    function stopAutoPlay() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    }
+
+    function reset() {
+      cycle = 0;
+      initStates();
+      renderUI();
+    }
+
+    // Toggle switch listener for target view selection
+    document.getElementById('target-view-toggle').addEventListener('change', (e) => {
+      // unchecked = Output Matrix mode (OFF), checked = With softmax mode (ON)
+      selectedTargetView = e.target.checked ? 'deskewed' : 'xtw';
+      
+      const label = document.getElementById('switch-mode-label');
+      label.innerText = e.target.checked ? 'With softmax: ON' : 'With softmax: OFF';
+      
+      updateLeftPanelVisibility();
+      buildGrid();
+      reset();
+    });
+
+    document.getElementById('btn-play').addEventListener('click', () => {
+      const iconPlay = document.getElementById('icon-play');
+      const iconPause = document.getElementById('icon-pause');
+
+      if (isPlaying) {
+        stopAutoPlay();
+        iconPlay.style.display = 'block';
+        iconPause.style.display = 'none';
+        isPlaying = false;
+      } else {
+        startAutoPlay();
+        iconPlay.style.display = 'none';
+        iconPause.style.display = 'block';
+        isPlaying = true;
+      }
+    });
+
+    document.getElementById('btn-step-back').addEventListener('click', () => {
+      if (isPlaying) {
+        stopAutoPlay();
+        document.getElementById('icon-play').style.display = 'block';
+        document.getElementById('icon-pause').style.display = 'none';
+        isPlaying = false;
+      }
+      stepBack();
+    });
+
+    document.getElementById('btn-step').addEventListener('click', () => {
+      if (isPlaying) {
+        stopAutoPlay();
+        document.getElementById('icon-play').style.display = 'block';
+        document.getElementById('icon-pause').style.display = 'none';
+        isPlaying = false;
+      }
+      step();
+    });
+
+    document.getElementById('btn-reset').addEventListener('click', reset);
+    document.getElementById('btn-apply-matrices').addEventListener('click', applyMatrixChanges);
+
+    // Report content height to the parent page when embedded in an iframe
+    function reportHeight() {
+      if (window.parent !== window) {
+        window.parent.postMessage({ type: 'systolic-height', height: Math.ceil(document.body.getBoundingClientRect().height) }, '*');
+      }
+    }
+    new ResizeObserver(reportHeight).observe(document.body);
+
+    // Scale the two main blocks (animation + matrices) to fit the available width so they always stay side by side
+    const fitWrap = document.getElementById('fit-wrap');
+    const mainLayout = document.getElementById('main-layout');
+    mainLayout.style.transformOrigin = 'top left';
+    let fitScale = 1;
+
+    function applyFitHeight() {
+      fitWrap.style.height = Math.ceil(mainLayout.offsetHeight * fitScale) + 'px';
+    }
+
+    function fitToWidth() {
+      const avail = document.documentElement.clientWidth - 20;
+      if (avail <= 0) return;
+      const natural = mainLayout.offsetWidth;
+      fitScale = Math.min(1, avail / natural);
+      mainLayout.style.transform = 'scale(' + fitScale + ')';
+      mainLayout.style.marginLeft = Math.max(0, (avail - natural * fitScale) / 2) + 'px';
+      applyFitHeight();
+    }
+    window.addEventListener('resize', fitToWidth);
+    new ResizeObserver(fitToWidth).observe(document.documentElement);
+    new ResizeObserver(applyFitHeight).observe(mainLayout);
+
+    buildMatrixInputs();
+    updateLeftPanelVisibility();
+    buildGrid();
+    reset();
+    startAutoPlay();
+    fitToWidth();
+  </script>
+</body>
+</html>

@@ -38,6 +38,11 @@ Released   : 20081009
     <br>
     <!-- <div class="divider"></div> -->
     My research focuses on training for low-precision ML inference. My recent works build a low-bit systolic array. On the hardware side, the low-bit arithmatic costs less energy from fewer logics and increases operational intensity. On the software side, the conventional quantized training is modified to fit low-bit integer arithmatic in the hardware. Combining the effort from both hardware and training, the power efficiency from a 16nm FPGA is 4.5x better than the same-technology GPUs.<br><br>
+    <button type="button" class="collapsible">Animation for systolic array</button>
+    <div id="systolicContent" class="content">
+        <iframe id="systolicFrame" src="systolic_array_animation.html?v=5" title="Systolic array animation" style="width:100%; height:900px; border:0; display:block;"></iframe>
+    </div>
+
     <button type="button" id="lowbitExperienceButton" class="collapsible">Related Experience</button>
     <div id="lowbitExperienceContent" class="content" style="display: block">
         <ul>
@@ -136,6 +141,16 @@ Released   : 20081009
     document.getElementById("lowbitExperienceContent").style.display = "block";  // Show the content
     document.getElementById("lowbitExperienceContent").style.maxHeight = document.getElementById("lowbitExperienceContent").scrollHeight + "0px"; // Cannot fix right now. Use 10x as an easy sol
 
+
+    // Keep the animation iframe sized to its content, and keep the collapsible block (if open) tall enough
+    window.addEventListener("message", function(e) {
+      if (!e.data || e.data.type !== "systolic-height") return;
+      var frame = document.getElementById("systolicFrame");
+      if (e.source !== frame.contentWindow) return;
+      frame.style.height = e.data.height + "px";
+      var box = document.getElementById("systolicContent");
+      if (box.style.maxHeight) box.style.maxHeight = box.scrollHeight + "px";
+    });
 </script>
 
 <script>
