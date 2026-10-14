@@ -1,4 +1,4 @@
- <!--
+<!--
 Design by Bryant Smith
 http://www.bryantsmith.com
 http://www.aszx.net
@@ -105,43 +105,43 @@ Released   : 20081009
     </div>
 
     <div>
-        <div id="navColumn">
-            <h3 style="text-align: center">Ching-Yi Lin</h3>
-            <h4 style="text-align: center">(林青億)</h4>
-            <h4 style="font-weight: normal; text-align: center">CMU ECE PhD</h4>
-            <img src="images/about.jpg" width="250">
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-            <h4 style="text-align: left">
-            <a href="https://scholar.google.com/citations?user=_eqMbZUAAAAJ&hl=en" class="fa fa-google"></a><a href="https://scholar.google.com/citations?user=_eqMbZUAAAAJ&hl=en"> Google Scholar</a><br>
-            <a href="https://www.linkedin.com/in/ching-yi-lin-9822971a4/" class="fa fa-linkedin"></a><a href="https://www.linkedin.com/in/ching-yi-lin-9822971a4/"> LinkedIn</a><br> 
-            <a href="https://github.com/chingyil" class="fa fa-github"></a><a href="https://github.com/chingyil"> Github</a><br>
-            <a href="mailto: chingyil@alumni.cmu.edu" class="glyphicon glyphicon-envelope"></a> cylin@cmu.edu <br>
-            <a href="mailto: chingyil071@gmail.com" class="glyphicon glyphicon-envelope"></a> chingyil071@gmail.com <br>
-            </h4>
-            </head>
-            <body>
-
-
-            <div class="subHeader"><h3>News</h3></div>
-            <ul>
-                <li>[Dec'24] PhD defended!
-                <li>[Oct'24] Paper accepted by JBHI (<a href="https://ieeexplore.ieee.org/document/10750488">Early Access</a>)!
-                <li>[Jun'24] Presented in NEWCAS 2024. Thank you Quebec!</li>
-                <!-- <li>[Jun'24] <a href="publications.html#papers">Paper</a> submitted to TechRXiv and JBHI</li> -->
-                <li>[Apr'24] Paper accepted by NEWCAS 2024!</li>
-                <li>[Jan'24] Become an ABD</li>
-                <li>[Jan'24] <a href="https://www.cs.cmu.edu/cmlh/digital-health-fellows">CMLH Fellowship</a> received</li>
-                <li>[Nov'23] <a href="#patent">Patent</a> published</li>
-                <li>[Jun'23] Finish leave of absence</li>
-                <li>[Jan'23] <a href="index.html#phd">Prospectus exam</a> passed</li>
-                <li>[Dec'22] Leave of absence for Taiwanese military service</li>    
-            </ul>
-        </div>
+        <div id="newsContainer" w3-include-html="news_header.html"></div>
     </div>
-  
+
 </div>
 <!-- Please leave the link(s) in the footer, but please do modify it in any other way you please -->
 <div id="footer">The HTML/CSS is modified by Ching-Yi using CMU-style theme (Tartan + Scotty dog icon)</div>
+
+<script>
+  function includeHTML() {
+    var z, i, elmnt, file, xhttp;
+    /*loop through a collection of all HTML elements:*/
+    z = document.getElementsByTagName("*");
+    for (i = 0; i < z.length; i++) {
+      elmnt = z[i];
+      /*search for elements with a certain attribute:*/
+      file = elmnt.getAttribute("w3-include-html");
+      if (file) {
+        /*make an HTTP request using the attribute value as the file name:*/
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4) {
+            if (this.status == 200) {elmnt.innerHTML = this.responseText;}
+            if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
+            /*remove the attribute, and call this function once more:*/
+            elmnt.removeAttribute("w3-include-html");
+            includeHTML();
+          }
+        }      
+        xhttp.open("GET", file, true);
+        xhttp.send();
+        /*exit the function:*/
+        return;
+      }
+    }
+  };
+// Call the function after page load
+document.addEventListener("DOMContentLoaded", includeHTML);
+</script>
 </body>
 </html>
