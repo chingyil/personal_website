@@ -34,6 +34,22 @@ Released   : 20081009
 
     <div id="contentColumn">		
     <!-- This is an entry, copy and paste it to create a new one -->      
+    <h2>Energy-efficient ML Circuit</h2>
+    <div class="divider"></div>
+    <br>
+    <!-- <div class="divider"></div> -->
+    My research focuses on energy-efficient inference for low-precision ML. This spans from mixed-signal microarchitecture to emerging devices. On the architectural side, I built a switched-capacitor array with each computing unit a 3-bit MAC operation implemented in a mixed-signal manner. This architecture is implemented in a TSMC 28-nm tapeout and achieves 10 TOPs/s/W, which is at the same level of a B200 GPU. On the device side, I developed a non-linearity aware training algorithm to deploy modern models to ReRAM devices. This project is collaborated with Intel. Currently we can deploy small-scale models like TinyBERT and DeiT-Tiny to ReRAM with less than 2% accuracy degradation.<br><br>
+    <button type="button" id="lowbitExperienceButton" class="collapsible">Related Experience</button>
+    <div id="lowbitExperienceContent" class="content" style="display: block">
+        <ul>
+            <li>96x32 Switched-capacitor Array in TSMC-28nm<img width=500px src="images/scarray-die.png" alt="Italian Trulli"><br></li>
+	    <li><a href="https://arxiv.org/pdf/2606.17471">ReRAM-aware Model Finetuning addressing I-V Non-linearity and Retention Errors</a><br><img width=500px src="images/tcas.png" alt="Italian Trulli"><br></li>
+	    <li><a href="https://arxiv.org/pdf/2604.20178">Design Space Exploration for ReRAM-based Architectures to Address Scaling Non-idealities</a><br><img width=500px src="images/mwscas2026.png" alt="Italian Trulli"><br></li>
+        </ul>
+    </div>
+
+    <div id="contentColumn">		
+    <!-- This is an entry, copy and paste it to create a new one -->      
     <h2>Training for low-precision ML inference</h2>
     <div class="divider"></div>
     <br>
@@ -89,7 +105,7 @@ Released   : 20081009
         </ul>
     </div>
 
-    <h2>High-density Sensory Array Design</h2>
+    <h2>High-density Sensor Array Design</h2>
     <div class="divider"></div>
     My research focuses on high-density mixed-signal circuit design. One aim of my thesis is to maximize the density of our sensor array through customized layout integrated with Cadence Digital-on-Top Flow. This implementation will be realized through a chip using XFAB 350nm technology. Other than this project, I also have another chip taped out with TSMC 28nm technology with another high-density sensor array. This chip is currently under test in our group.<br><br>
     <button type="button" id="relatedExperienceButton" class="collapsible">Related Experience</button>
